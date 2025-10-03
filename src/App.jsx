@@ -32,7 +32,25 @@ function App() {
         {
           path: 'products',
           element: <Products />
-        }
+        },
+        {
+        path: 'cart',
+        element: <Cart />,
+      },
+      {
+        path: 'about',
+        element: <About />,
+      },
+      {
+        path: 'checkout',
+        element: <Checkout />,
+    
+      },
+      {
+        path: 'orders',
+        element: <Orders />,
+       
+      },
       ]
     },
     {
