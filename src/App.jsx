@@ -16,6 +16,9 @@ import {
   SingleProduct,
 } from './pages'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import ErrorElement from './components/ErrorElement'
+
+import {loader as landingLoder} from './pages/Landing'
 
 function App() {
 
@@ -27,7 +30,9 @@ function App() {
       children: [
         {
           index: true,
-          element: <Landing />
+          element: <Landing />,
+          loader: landingLoder,
+          error: <ErrorElement />
         },
         {
           path: 'products',
