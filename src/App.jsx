@@ -1,7 +1,7 @@
 import { Children, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import {
   About,
   Cart,
@@ -15,13 +15,22 @@ import {
   Register,
   SingleProduct,
 } from './pages'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+
+
 import ErrorElement from './components/ErrorElement'
 
 import {loader as landingLoder} from './pages/Landing'
-
+import {loader as singleProductLoader} from './pages/SingleProduct'
+// import { loader as productsLoader } from './pages/Products';
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5,
+    },
+    refetchOnWindowFocus: false
+  },
+})
 function App() {
-
   const router = createBrowserRouter([
     {
       path: '/',
@@ -31,12 +40,19 @@ function App() {
         {
           index: true,
           element: <Landing />,
-          loader: landingLoder,
-          error: <ErrorElement />
+          loader: landingLoder(queryClient),
+          errorElement: <ErrorElement />
         },
         {
           path: 'products',
+          errorElement: <ErrorElement />,
+          // loader: productsLoader(queryClient),
           element: <Products />
+        },
+         {
+          path: 'products/:id',
+          element: <SingleProduct />,
+          loader: singleProductLoader(queryClient),
         },
         {
         path: 'cart',
@@ -68,7 +84,12 @@ function App() {
       element: <Register />
     }
   ])
-  return < RouterProvider router={router} />
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
+  );
   
 }
 
