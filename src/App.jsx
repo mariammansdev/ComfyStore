@@ -21,7 +21,8 @@ import ErrorElement from './components/ErrorElement'
 
 import {loader as landingLoder} from './pages/Landing'
 import {loader as singleProductLoader} from './pages/SingleProduct'
-// import { loader as productsLoader } from './pages/Products';
+import { loader as productsLoader } from './pages/Products';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -46,7 +47,7 @@ function App() {
         {
           path: 'products',
           errorElement: <ErrorElement />,
-          // loader: productsLoader(queryClient),
+          loader: productsLoader(queryClient),
           element: <Products />
         },
          {

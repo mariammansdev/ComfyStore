@@ -1,5 +1,6 @@
-import React from 'react'
-import { formatPrice, customFetch } from '../utils';
+
+import { useState } from 'react';
+import { formatPrice, customFetch, generateAmountOptions } from '../utils';
 import { Link, useLoaderData } from 'react-router-dom';
 const singleProductQuery = (id) => {
   return {
@@ -11,15 +12,20 @@ const singleProductQuery = (id) => {
   }
 
 }
+
 export const loader = (queryClient) => async ({ params }) => {
   const product = await queryClient.ensureQueryData(singleProductQuery(params.id));
   return { product };
 }
 const SingleProduct = () => {
   const { product } = useLoaderData();
-  const { image, title, price, description, colors, company } =
-    product.attributes;
+  const { image, title, price, description, colors, company } = product.attributes;
   const dollarsAmount = formatPrice(price);
+  const [productColor, setProductColor] = useState(colors[0]);
+  const [amount, setAmount] = useState(1);
+  const handleAmount = (e) => {
+    setAmount(parseInt(e.target.value));
+  };
 
   return (
     <section>
@@ -60,16 +66,16 @@ const SingleProduct = () => {
                   <button
                     key={color}
                     type='button'
-                    className={`badge w-6 h-6 mr-2 `}
+                    className={`badge w-6 h-6 mr-2 ${color === productColor && 'border-2 border-secondary'}`}
                     style={{ backgroundColor: color }}
-
+                    onClick={() => setProductColor(color)}
                   ></button>
                 );
               })}
             </div>
           </div>
           {/* AMOUNT */}
-          {/* <div className='form-control w-full max-w-xs'>
+          <div className='form-control w-full max-w-xs'>
             <label className='label' htmlFor='amount'>
               <h4 className='text-md font-medium -tracking-wider capitalize'>
                 amount
@@ -83,7 +89,7 @@ const SingleProduct = () => {
             >
               {generateAmountOptions(20)}
             </select>
-          </div> */}
+          </div>
           {/* CART BTN */}
           <div className='mt-10'>
             <button className='btn btn-secondary btn-md' >
