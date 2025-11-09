@@ -1,7 +1,14 @@
 import { Link, useLoaderData } from 'react-router-dom';
 import { formatPrice } from '../utils';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { useEffect } from 'react';
 
 const ProductsList = () => {
+    useEffect(() => {
+        AOS.init({ duration: 1000, once: true });
+    }, []);
+
     const { products } = useLoaderData();
     return (
         <div className='pt-12 grid gap-4'>
@@ -13,6 +20,7 @@ const ProductsList = () => {
                         key={product.id}
                         to={`/products/${product.id}`}
                         className='p-8 flex flex-col sm:flex-row rounded-lg shadow-xl hover:shadow-2xl duration-300 group'
+                        data-aos="fade-up"
                     >
                         <img
                             src={image}

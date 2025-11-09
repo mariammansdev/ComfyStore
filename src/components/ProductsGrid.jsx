@@ -1,7 +1,17 @@
 import { Link, useLoaderData } from 'react-router-dom';
 import { formatPrice } from '../utils';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
+import { useEffect } from 'react';
+
 const ProductsGrid = () => {
-  const {products}  = useLoaderData();
+
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
+  const { products } = useLoaderData();
+
   return (
     <div className='pt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
       {products.map((product) => {
@@ -12,6 +22,7 @@ const ProductsGrid = () => {
             key={product.id}
             to={`/products/${product.id}`}
             className='card w-full shadow-xl hover:shadow-2xl transition duration-300'
+            data-aos="fade-up"
           >
             <figure className='px-4 pt-4'>
               <img
