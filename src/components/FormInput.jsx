@@ -1,15 +1,16 @@
-
-const Login = ({label, name, type, defaultValue}) => {
+const FormInput = ({ label, name, type, defaultValue, size }) => {
   return (
-    <div className="form-control">
-      <fieldset className="fieldset">
-        <legend className="fieldset-legend">{label}</legend>
-        <input type={type} className="input" placeholder="Type here" name={name} defaultValue={defaultValue}/>
-
-      </fieldset>
-     
+    <div className='form-control'>
+      <label htmlFor={name} className='label'>
+        <span className='label-text capitalize'>{label}</span>
+      </label>
+      <input
+        type={type}
+        name={name}
+        defaultValue={defaultValue}
+        className={`input input-bordered ${size}`}
+      />
     </div>
-  )
-}
-
-export default Login
+  );
+};
+export default FormInput;

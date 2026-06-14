@@ -1,30 +1,54 @@
-
-import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 import { formatPrice, customFetch, generateAmountOptions } from '../utils';
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../features/cart/cartSlice';
+
 const singleProductQuery = (id) => {
   return {
-    queryKey: ['single-product', id],
-    queryFn: async () => {
-      const res = await customFetch(`/products/${id}`);
-      return res.data.data;
-    },
-  }
+    queryKey: ['singleProduct', id],
+    queryFn: () => customFetch(`/products/${id}`),
+  };
+};
 
-}
+export const loader =
+  (queryClient) =>
+  async ({ params }) => {
+    const response = await queryClient.ensureQueryData(
+      singleProductQuery(params.id)
+    );
 
-export const loader = (queryClient) => async ({ params }) => {
-  const product = await queryClient.ensureQueryData(singleProductQuery(params.id));
-  return { product };
-}
+    return { product: response.data.data };
+  };
+
 const SingleProduct = () => {
   const { product } = useLoaderData();
-  const { image, title, price, description, colors, company } = product.attributes;
+  const { image, title, price, description, colors, company } =
+    product.attributes;
   const dollarsAmount = formatPrice(price);
   const [productColor, setProductColor] = useState(colors[0]);
   const [amount, setAmount] = useState(1);
+
   const handleAmount = (e) => {
     setAmount(parseInt(e.target.value));
+  };
+
+  const cartProduct = {
+    cartID: product.id + productColor,
+    productID: product.id,
+    image,
+    title,
+    price,
+    company,
+    productColor,
+    amount,
+  };
+
+  const dispatch = useDispatch();
+
+  const addToCart = () => {
+    dispatch(addItem({ product: cartProduct }));
   };
 
   return (
@@ -66,7 +90,9 @@ const SingleProduct = () => {
                   <button
                     key={color}
                     type='button'
-                    className={`badge w-6 h-6 mr-2 ${color === productColor && 'border-2 border-secondary'}`}
+                    className={`badge w-6 h-6 mr-2 ${
+                      color === productColor && 'border-2 border-secondary'
+                    }`}
                     style={{ backgroundColor: color }}
                     onClick={() => setProductColor(color)}
                   ></button>
@@ -92,7 +118,7 @@ const SingleProduct = () => {
           </div>
           {/* CART BTN */}
           <div className='mt-10'>
-            <button className='btn btn-secondary btn-md' >
+            <button className='btn btn-secondary btn-md' onClick={addToCart}>
               Add to bag
             </button>
           </div>
@@ -100,6 +126,5 @@ const SingleProduct = () => {
       </div>
     </section>
   );
-}
-
-export default SingleProduct
+};
+export default SingleProduct;

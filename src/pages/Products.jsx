@@ -1,10 +1,11 @@
-import { Filters, ProductsContainer, PaginationContainer } from "../components";
-import { customFetch } from "../utils"
+import { Filters, PaginationContainer, ProductsContainer } from '../components';
+import { customFetch } from '../utils';
 const url = '/products';
 
-const fetchProducts = (queryParams) => {
+const allProductsQuery = (queryParams) => {
   const { search, category, company, sort, price, shipping, page } =
     queryParams;
+
   return {
     queryKey: [
       'products',
@@ -16,20 +17,28 @@ const fetchProducts = (queryParams) => {
       shipping ?? false,
       page ?? 1,
     ],
-    queryFn: () => customFetch(url, { params: queryParams })
-  }
-}
+    queryFn: () =>
+      customFetch(url, {
+        params: queryParams,
+      }),
+  };
+};
 
+export const loader =
+  (queryClient) =>
+  async ({ request }) => {
+    const params = Object.fromEntries([
+      ...new URL(request.url).searchParams.entries(),
+    ]);
 
+    const response = await queryClient.ensureQueryData(
+      allProductsQuery(params)
+    );
+    const products = response.data.data;
+    const meta = response.data.meta;
+    return { products, meta, params };
+  };
 
-export const loader = (queryClient) => async ({ request }) => {
-  debugger
-  const params = Object.fromEntries([...new URL(request.url).searchParams.entries()]);
-  const res = await queryClient.ensureQueryData(fetchProducts(params));
-  const products = res.data.data;
-  const meta = res.data.meta;
-  return { products, meta, params };
-}
 const Products = () => {
   return (
     <>
@@ -37,7 +46,6 @@ const Products = () => {
       <ProductsContainer />
       <PaginationContainer />
     </>
-  )
-}
-
-export default Products
+  );
+};
+export default Products;
