@@ -1,4 +1,4 @@
-const FormCheckbox = ({ label, name, defaultValue, size }) => {
+const FormCheckBox = ({ label, name, defaultValue, size }) => {
   return (
     <div className='form-control items-center'>
       <label htmlFor={name} className='label cursor-pointer'>
@@ -13,4 +13,4 @@ const FormCheckbox = ({ label, name, defaultValue, size }) => {
     </div>
   );
 };
-export default FormCheckbox;
+export default FormCheckBox;
